@@ -25,17 +25,40 @@ const model = {
 
 
 const operator = {
+    "carouselInterval" : "",
+
     "getWrapper" : function() {
         const wrapper = document.getElementById('wrapper');
         return wrapper;
+    },
+    "getImg" : function() {
+        const pic = document.getElementById('pic');
+        return pic;
     },
     "createImg" : function() {
         const wrapper = operator.getWrapper();
         const pic = document.createElement('img');
         pic.id = 'pic';
-        pic.setAttribute('src', model.pics[0].imgSrc);
-        pic.setAttribute('alt', model.pics[0].imgAlt);
+        wrapper.appendChild(pic);
         return pic;
+    },
+    "setImg" : function(x) {
+        const pic = operator.getImg() || operator.createImg();
+        pic.setAttribute('src', model.pics[x].imgSrc);
+        pic.setAttribute('alt', model.pics[x].imgAlt);
+    },
+    "carousel" : function(x) {
+        var x = x;
+        console.log(x);
+        operator.carouselInterval = setInterval(function() {
+            if (x < model.pics.length) {
+                operator.setImg(x);
+                x++;
+            } else {
+                x = 0;
+                operator.setImg(x);
+            }
+        }, 2000);
     },
     "createIndicatorList" : function() {
         for (var pic in model.pics) {
@@ -49,14 +72,12 @@ const operator = {
 
 const viewer = {
     "initDisplay" : function() {
-        const pic = operator.createImg()
-        const wrapper = operator.getWrapper();
-        wrapper.appendChild(pic);
+        operator.carousel(0);
+        viewer.indicatorsDisplay();
     },
     "indicatorsDisplay" : function() {
         operator.createIndicatorList();
     }
 }
 viewer.initDisplay();
-viewer.indicatorsDisplay();
 
