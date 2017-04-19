@@ -42,25 +42,10 @@ const operator = {
         const pic = document.getElementById('pic');
         return pic;
     },
-    "setImg" : function(x) {
-        const pic = operator.getImg();
-        pic.setAttribute('src', model.pics[x].imgSrc);
-        pic.setAttribute('alt', model.pics[x].imgAlt);
-        operator.carousel(x);
-    },
     "carousel" : function(x) {
         operator.carouselTimeout = setTimeout(function() {
-            operator.changeImg(x+1);
+            viewer.changeImg(x+1);
         }, 3000);
-    },
-    "changeImg" : function(x) {
-        if (x < model.pics.length) {
-            operator.setImg(x);
-        } else {
-            x = 0;
-            operator.setImg(x);
-        }
-        operator.currentImg = x;
     },
     "eventListeners" : function() {
         const previous = document.getElementById('previous');
@@ -68,15 +53,49 @@ const operator = {
         
         previous.addEventListener('click', function() {
             operator.clearTimeout();
-            operator.changeImg(operator.currentImg-1);
+            viewer.changeImg(operator.currentImg-1);
         });
         next.addEventListener('click', function() {
             operator.clearTimeout();
-            operator.changeImg(operator.currentImg+1);
+            viewer.changeImg(operator.currentImg+1);
         });
     }
 }
 
+const viewer = {
+    "setImg" : function(x) {
+        const pic = operator.getImg();
+        pic.setAttribute('src', model.pics[x].imgSrc);
+        pic.setAttribute('alt', model.pics[x].imgAlt);
+        operator.carousel(x);
+    },
+    "changeImg" : function(x) {
+        if (x < 0) {
+            x = (model.pics.length - 1)
+            viewer.setImg(x);
+        } else if (x < model.pics.length) {
+            viewer.setImg(x);
+        } else {
+            x = 0;
+            viewer.setImg(x);
+        }
+        operator.currentImg = x;
+    },
+    "showIndicators" : function() {
+        for (var pic in model.pics) {
+            const indicatorsList = document.getElementById('indicators-list');
+            var indicator = document.createElement('li');
+            indicator.className = 'indicator';
+            indicatorsList.appendChild(indicator);
+        }
+    },
+}
+
+
+
 operator.createImg();
-operator.setImg(operator.currentImg);
 operator.eventListeners();
+
+
+viewer.setImg(operator.currentImg);
+viewer.showIndicators();
