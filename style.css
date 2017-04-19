@@ -25,15 +25,17 @@ img {
     display: inline;
 }
 
-.indicators-wrapper {
-    max-width: 900px;
-    margin: 0 auto;
+.indicators-wrapper, .arrows-wrapper {
+    width: 60%;
+    margin: 5px auto;
+    text-align: center;
 }
 .list {
     list-style: none;
     text-align: center;
     padding-left: 0;
     margin: 0;
+    display: inline;
 }
 
 .indicator {
@@ -49,7 +51,15 @@ img {
 .active {
     border-color: skyblue;
 }
-
+.arrow {
+    color: white;
+    font-size: 25px;
+    cursor: pointer;
+    margin: 0 10px;
+}
+.arrow:active {
+    color: skyblue;
+}
 
 @media all and (min-width: 1400px) {
     .wrapper {
