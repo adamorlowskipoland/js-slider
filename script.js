@@ -59,6 +59,12 @@ const operator = {
             operator.clearTimeout();
             viewer.changeImg(operator.currentImg+1);
         });
+        const indicators = Array.from(document.getElementsByClassName('indicator'));
+        indicators.forEach(indicator => indicator.addEventListener('click', function() {
+            var index = indicators.indexOf(this);
+            operator.clearTimeout();
+            viewer.setImg(index);
+        }));
     }
 }
 
@@ -68,6 +74,7 @@ const viewer = {
         pic.setAttribute('src', model.pics[x].imgSrc);
         pic.setAttribute('alt', model.pics[x].imgAlt);
         operator.carousel(x);
+        viewer.activeIndicator(x);
     },
     "changeImg" : function(x) {
         if (x < 0) {
@@ -87,15 +94,24 @@ const viewer = {
             var indicator = document.createElement('li');
             indicator.className = 'indicator';
             indicatorsList.appendChild(indicator);
-        }
+            viewer.activeIndicator(0);
+        };
     },
+    "activeIndicator" : function(x) {
+        const indicators = document.querySelectorAll('.indicator');
+        indicators.forEach(function(indicator) {
+            indicator.classList.remove('active');
+        });
+        var indicator = indicators[x];
+        indicator.classList.add('active');
+    },
+    "displayInit" : function() {
+        operator.createImg();
+        viewer.showIndicators();
+        viewer.setImg(operator.currentImg);
+        operator.eventListeners();
+    }
 }
 
+viewer.displayInit();
 
-
-operator.createImg();
-operator.eventListeners();
-
-
-viewer.setImg(operator.currentImg);
-viewer.showIndicators();
