@@ -25,59 +25,58 @@ const model = {
 
 
 const operator = {
-    "carouselInterval" : "",
+    "carouselTimeout" : "",
+    "currentImg" : 0,
 
-    "getWrapper" : function() {
+    "clearTimeout" : function() {
+        clearTimeout(operator.carouselTimeout);
+    },
+
+    "createImg" : function() {
         const wrapper = document.getElementById('wrapper');
-        return wrapper;
+        const pic = document.createElement('img');
+        pic.id = 'pic';
+        wrapper.appendChild(pic);
     },
     "getImg" : function() {
         const pic = document.getElementById('pic');
         return pic;
     },
-    "createImg" : function() {
-        const wrapper = operator.getWrapper();
-        const pic = document.createElement('img');
-        pic.id = 'pic';
-        wrapper.appendChild(pic);
-        return pic;
-    },
     "setImg" : function(x) {
-        const pic = operator.getImg() || operator.createImg();
+        const pic = operator.getImg();
         pic.setAttribute('src', model.pics[x].imgSrc);
         pic.setAttribute('alt', model.pics[x].imgAlt);
+        operator.carousel(x);
     },
     "carousel" : function(x) {
-        var x = x;
-        console.log(x);
-        operator.carouselInterval = setInterval(function() {
-            if (x < model.pics.length) {
-                operator.setImg(x);
-                x++;
-            } else {
-                x = 0;
-                operator.setImg(x);
-            }
-        }, 2000);
+        operator.carouselTimeout = setTimeout(function() {
+            operator.changeImg(x+1);
+        }, 3000);
     },
-    "createIndicatorList" : function() {
-        for (var pic in model.pics) {
-            const indicatorList = document.getElementById('indicators-list');
-            var indicator = document.createElement('li');
-            indicator.className = 'indicator';
-            indicatorList.appendChild(indicator);
+    "changeImg" : function(x) {
+        if (x < model.pics.length) {
+            operator.setImg(x);
+        } else {
+            x = 0;
+            operator.setImg(x);
         }
-    }
-}
-
-const viewer = {
-    "initDisplay" : function() {
-        operator.carousel(0);
-        viewer.indicatorsDisplay();
+        operator.currentImg = x;
     },
-    "indicatorsDisplay" : function() {
-        operator.createIndicatorList();
+    "eventListeners" : function() {
+        const previous = document.getElementById('previous');
+        const next = document.getElementById('next');
+        
+        previous.addEventListener('click', function() {
+            operator.clearTimeout();
+            operator.changeImg(operator.currentImg-1);
+        });
+        next.addEventListener('click', function() {
+            operator.clearTimeout();
+            operator.changeImg(operator.currentImg+1);
+        });
     }
 }
-viewer.initDisplay();
 
+operator.createImg();
+operator.setImg(operator.currentImg);
+operator.eventListeners();
